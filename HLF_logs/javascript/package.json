@@ -17,6 +17,7 @@
     "license": "Apache-2.0",
     "dependencies": {
         "bcrypt": "^3.0.7",
+        "circular-json": "^0.5.9",
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",

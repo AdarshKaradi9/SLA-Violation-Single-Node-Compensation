@@ -14,7 +14,8 @@ cd javascript
 ./remove.sh
 
 node enrollAdmin.js
-node registerInit.js
+#node registerInit.js
+
 #comment
 
 

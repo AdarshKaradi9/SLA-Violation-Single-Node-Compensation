@@ -6,100 +6,24 @@
 
 const { Contract } = require('fabric-contract-api');
 class LogChain extends Contract {
-
     async initLedger(ctx) {
       console.info('============= START : Initialize Ledger ===========');
       // TYPE 0 50% 100:GOLD, 1 70% 50:SILVER, 2 90% 25:BRONZE
-      const logs = [
+      const global = [
           {
-              uid:'user1',
-              violatedLogs: [
-                  {
-                      tid: 2,
-                      ram: 8,
-                      os: 'windows',
-                      load: 80,
-                      autoscale: 0
-                  },
-              ],
-              allLogs: [
-                  {
-                      tid: 1,
-                      ram: 8,
-                      os: 'windows',
-                      load: 40,
-                      autoscale: 0
-                  },
-                  {
-                      tid: 2,
-                      ram: 8,
-                      os: 'windows',
-                      load: 80,
-                      autoscale: 0
-                  },
-                  {
-                      tid: 3,
-                      ram: 8,
-                      os: 'windows',
-                      load: 90,
-                      autoscale: 1
-                  },
-              ],
-              type: 1,
-              compensationNoTimes: 0,
-              compensationValue: 50,
-              compensationTillNow: 0,
-              threshold: 70
-          },
-          {
-              uid: 'user2',
-              violatedLogs: [
-                  {
-                      tid: 2,
-                      ram: 8,
-                      os: 'windows',
-                      load: 60,
-                      autoscale: 0
-                  },
-              ],
-              allLogs: [
-                  {
-                      tid: 1,
-                      ram: 8,
-                      os: 'windows',
-                      load: 40,
-                      autoscale: 1
-                  },
-                  {
-                      tid: 2,
-                      ram: 16,
-                      os: 'windows',
-                      load: 60,
-                      autoscale: 0
-                  },
-              ],
-              type: 0,
-              compensationNoTimes: 0,
-              compensationValue: 100,
-              compensationTillNow: 0,
-              threshold: 50
+            logs:[],
           },
       ];
 
-      for (let i = 1; i <=logs.length; i++) {
-          await ctx.stub.putState('user' + i, Buffer.from(JSON.stringify(logs[i-1])));
-          console.info('Added <--> ', logs[i]);
-      }
+      await ctx.stub.putState('admin', Buffer.from(JSON.stringify(global)));
       console.info('============= END : Initialize Ledger ===========');
     }
 
     async createUser(ctx, args) {
         console.info('============= START : Create Log ===========');
         args= JSON.parse(args);
-        let violatedLogs=[];
-        let allLogs=[];
+        let logs=[];
         let compensationNoTimes=0;
-        let compensationTillNow=0;
         let compensationValue=0;
         let threshold=0;
         let uid=args.username;
@@ -116,17 +40,15 @@ class LogChain extends Contract {
           compensationValue=50
           threshold=90
         }
-        const log = {
+        const user = {
           uid,
-          violatedLogs,
-          allLogs,
+          logs,
           type,
           compensationNoTimes,
           compensationValue,
-          compensationTillNow,
           threshold,
       };
-        await ctx.stub.putState(uid,Buffer.from(JSON.stringify(log)));
+        await ctx.stub.putState(uid,Buffer.from(JSON.stringify(user)));
         console.info('============= END : Create Log ===========');
     }
 
@@ -139,28 +61,27 @@ class LogChain extends Contract {
       return logAsBytes.toString();
   }
 
-    async addLogsByUser(ctx,uid,vioLog,allLog) {
-      const userAsBytes = await ctx.stub.getState(uid);
-      if (!userAsBytes || logAsBytes.length === 0) {
-        throw new Error(`${uid} does not exist`);
+    async addLogs(ctx,args) {
+      args=JSON.parse(args);
+      let logs=args.logs
+      const userAsBytes = await ctx.stub.getState(args.uid);
+      if (!userAsBytes || userAsBytes.length === 0) {
+        throw new Error(`${args.uid} does not exist`);
+      } 
+      const globalLogs = await ctx.stub.getState('admin');
+      if (!globalLogs || globalLogs.length === 0) {
+        throw new Error(`admin does not exist`);
       }
+      const global = JSON.parse(globalLogs.toString());
       const user = JSON.parse(userAsBytes.toString());
-      user.violatedLogs=user.violatedLogs.concat(vioLog)
-      user.allLogs=user.allLogs.concat(allLog);
-      await ctx.stub.putState(uid, Buffer.from(JSON.stringify(user)));
-    }
-
-    async compensate(ctx,uid) {
-      const userAsBytes = await ctx.stub.getState(uid);
-      if (!userAsBytes || logAsBytes.length === 0) {
-        throw new Error(`${uid} does not exist`);
+      logs.tid=global.logs.length+1
+      if(logs.load>user.threshold && !user.logs.autoscale) {
+        user.logs=user.logs.push(logs);
+        await ctx.stub.putState(args.uid, Buffer.from(JSON.stringify(user)));
       }
-      const user = JSON.parse(userAsBytes.toString());
-      var comp=user.violatedLogs.length;
-      user.compensationNoTimes=user.compensationNoTimes+comp;
-      user.compensationTillNow=user.compensationTillNow+comp*user.compensationValue;
-      user.violatedLogs=[]
-      await ctx.stub.putState(uid, Buffer.from(JSON.stringify(user)));
+      logs.uid=args.uid.
+      global.logs=global.logs.push(logs);
+      await ctx.stub.putState('admin', Buffer.from(JSON.stringify(global)));
     }
 }
 

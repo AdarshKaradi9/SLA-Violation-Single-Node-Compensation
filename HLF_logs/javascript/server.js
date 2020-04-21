@@ -8,7 +8,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 let network = require('./network.js');
-
+var CircularJSON = require('circular-json');
 app.use(express.json());
 app.use(cors());
 
@@ -71,11 +71,10 @@ async function main() {
                 if (networkObj.error) {
                 res.send(networkObj.error);
                 }
-                req.body = JSON.stringify(req.body);
-                let args = [req.body];
-                console.log('before invoke',args)
-                let invokeResponse = await network.invoke(networkObj, false, 'createUser', args);
-                console.log("after",invokeResponse);
+                let args = [JSON.stringify(req.body)];
+                console.log('before invoke')
+                let invokeResponse = await network.invoke(networkObj, false, 'createUser',args);
+                console.log("after");
                 if (invokeResponse.error) {
                 res.send(invokeResponse.error);
                 } else {
