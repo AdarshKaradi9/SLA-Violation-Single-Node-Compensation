@@ -9,11 +9,20 @@ class LogChain extends Contract {
     async initLedger(ctx) {
       console.info('============= START : Initialize Ledger ===========');
       // TYPE 0 50% 100:GOLD, 1 70% 50:SILVER, 2 90% 25:BRONZE
-      const global = [
+      const global =
           {
-            logs:[],
-          },
-      ];
+            len:1,
+            logs:[
+              {
+                tid:1,
+                uid:'init',
+                ram: 8,
+                os: 'windows',
+                load: 40,
+                autoscale: 0
+              },
+            ],
+          }
 
       await ctx.stub.putState('admin', Buffer.from(JSON.stringify(global)));
       console.info('============= END : Initialize Ledger ===========');
@@ -63,7 +72,7 @@ class LogChain extends Contract {
 
     async addLogs(ctx,args) {
       args=JSON.parse(args);
-      let logs=args.logs
+      var log=args.logs;
       const userAsBytes = await ctx.stub.getState(args.uid);
       if (!userAsBytes || userAsBytes.length === 0) {
         throw new Error(`${args.uid} does not exist`);
@@ -74,14 +83,17 @@ class LogChain extends Contract {
       }
       const global = JSON.parse(globalLogs.toString());
       const user = JSON.parse(userAsBytes.toString());
-      logs.tid=global.logs.length+1
-      if(logs.load>user.threshold && !user.logs.autoscale) {
-        user.logs=user.logs.push(logs);
+
+      log['tid']=global.len+1
+      if(log.load>user.threshold && log.autoscale==1) {
+        user.logs.push(log);
         await ctx.stub.putState(args.uid, Buffer.from(JSON.stringify(user)));
       }
-      logs.uid=args.uid.
-      global.logs=global.logs.push(logs);
+      log['uid']=args.uid
+      global.logs.push(log);
+      global.len=global.len+1
       await ctx.stub.putState('admin', Buffer.from(JSON.stringify(global)));
+      
     }
 }
 

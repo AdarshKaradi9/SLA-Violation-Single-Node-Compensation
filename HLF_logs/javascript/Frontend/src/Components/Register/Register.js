@@ -51,7 +51,7 @@ class Register extends React.Component {
             .then(response => response.json())
             .then(data => {
                 if (data.resStatus === 'success') {
-                    alert(`${data.userName} successfully registered to the network`);
+                    alert(`${this.state.user.username} successfully registered to the network`);
                     this.props.onRouteChange('signin');
                 } else {
                     alert('Failed to register : User already exists');
@@ -64,7 +64,7 @@ class Register extends React.Component {
 
 
     render() {
-        const { username, password, submitted,type,email,user } = this.state;
+        const { username, password, submitted,type,user } = this.state;
         return(
             
             <div className="main">
@@ -78,12 +78,6 @@ class Register extends React.Component {
                             <input type="text" className="form-input" name="username" id="name" value={user.username} onChange={this.handleChange} placeholder="Username"/>
                             {submitted && !user.username &&
                             <div className="help-block">Username is required</div>
-                        }
-                        </div>
-                        <div className={'form-group' + (submitted && !email ? ' has-error' : '')}>
-                            <input type="email" className="form-input" name="email" id="email" placeholder="Your Email"/>
-                            {submitted && !user.email &&
-                            <div className="help-block">Email is required</div>
                         }
                         </div>
                         <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>

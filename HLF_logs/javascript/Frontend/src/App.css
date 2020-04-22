@@ -1,7 +1,6 @@
 .App {
     height: 100%;
     position: absolute;
-    left: 0;
     width: 100%;
     overflow: hidden;
     align-items: center;
@@ -15,11 +14,6 @@
     overflow: hidden;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
 .App-header {
   background-color: #222;
   height: 150px;
@@ -31,10 +25,7 @@
   font-size: large;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+
 .mdiv {
   background-image: url(./images/blockchain.jpg);
   background-size: cover;

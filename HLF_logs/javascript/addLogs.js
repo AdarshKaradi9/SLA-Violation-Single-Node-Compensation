@@ -1,30 +1,24 @@
 let network = require('./network.js');
 var user=process.argv[2]
 async function main() {
-    let userid = await network.connectToNetwork(user);
+    var userid = await network.connectToNetwork(user);
     console.log('connected to user1');
-    let logsArr = [
+    var logsArr = 
         {
             ram: 8,
             os: 'windows',
-            load: 40,
-            autoscale: 0
-        },
-        {
-            ram: 8,
-            os: 'windows',
-            load: 80,
-            autoscale: 0
-        },
-    ]
-    let args= {
+            load: 91,
+            autoscale: 1
+        };
+    var args= {
         uid:user,
         logs:logsArr
-    }
-    //console.log(args.aid)
+    };
+    console.log(typeof(args.logs.load))
     args=[JSON.stringify(args)]
-    console.log(typeof(args),args)
+    
     let response = await network.invoke(userid, false, 'addLogs',args);
+    console.log('chain',response);
     if (response.error) {
         console.log(response.error);
     } else {

@@ -1,39 +1,65 @@
 import React from 'react';
-import 'bulma/css/bulma.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table } from 'react-bootstrap';
-export default function LogsList({transactionData}) {
-  const dataLogs = transactionData.data;
-  console.log(dataLogs);
-  return (
-    
+import { MDBDataTable } from 'mdbreact';
 
-<div class="demo">
-  <h1 id="responsive">Logs</h1>
-  <br />
-  <Table striped bordered hover >
-    <thead>
-      <tr>
-        <th>Tid</th>
-        <th>Load</th>
-        <th>Os</th>
-        <th>Ram</th>
-        <th>Autoscale</th>
-      </tr>
-    </thead>
-    <tbody>
-    {dataLogs.violatedLogs.map(dataLog => (
-      <tr>
-        <td>{dataLog.tid}</td>
-        <td>{dataLog.load}</td>
-        <td>{dataLog.os}</td>
-        <td>{dataLog.ram}</td>
-        <td>{dataLog.autoscale}</td>
-      </tr>
-      ))}
-      </tbody>
-      </Table>
-      </div>
+const DatatablePage = (userData) => {
+    console.log(userData.logs)
+    const data = {
+        columns: [
+            {
+                label: 'Tid',
+                field: 'tid',
+                sort: 'asc',
+                width: 100
+            },
+            {
+                label: 'Load',
+                field: 'load',
+                sort: 'asc',
+                width: 100
+            },
+            {
+                label: 'Os',
+                field: 'os',
+                sort: 'asc',
+                width: 100
+            },
+            {
+                label: 'Ram',
+                field: 'ram',
+                sort: 'asc',
+                width: 100
+            },
+            {
+                label: 'Autoscale',
+                field: 'autoscale',
+                sort: 'asc',
+                width: 100
+            },
+        ],
+        rows:userData.logs,
+    };
+
+    return (data)
+}
+
+
+
+export default function LogList({transactionData}) {
+  const userData = transactionData.data;
+  console.log(userData);
+  const data=DatatablePage(userData)
+  return(
+    <div><h1>Violated logs</h1>
+    
+        <MDBDataTable
+          striped
+          bordered
+          hover
+          data={data}
+          paginationLabel={false}
+          paging={false}
+        />
+        </div>
 
   );
 };

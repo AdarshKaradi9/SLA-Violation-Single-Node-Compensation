@@ -56,7 +56,7 @@ class App extends Component {
             : route === 'home'
             ? <GetTransaction isTransactionData={isTransactionData} transactionData={transactionData} onClickingView={this.onClickingView} onRouteChange={this.onRouteChange} />
             : route === 'logs'
-            ? <ViewTransaction isTransactionData={isTransactionData} transactionData={transactionData} />
+              ? <ViewTransaction isTransactionData={isTransactionData} transactionData={transactionData} currentUser={currentUser} />
             : <div></div>
           }
     </div>
