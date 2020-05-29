@@ -61,7 +61,7 @@ class LogChain extends Contract {
         console.info('============= END : Create Log ===========');
     }
 
-    async queryLog(ctx, uid) {
+    async queryUser(ctx, uid) {
       const logAsBytes = await ctx.stub.getState(uid); // get the Log from chaincode state
       if (!logAsBytes || logAsBytes.length === 0) {
           throw new Error(`${uid} does not exist`);
@@ -94,6 +94,19 @@ class LogChain extends Contract {
       global.len=global.len+1
       await ctx.stub.putState('admin', Buffer.from(JSON.stringify(global)));
       
+    }
+
+    async compensate(ctx,uid) {
+      const userAsBytes = await ctx.stub.getState(uid); // get the car from chaincode state
+        if (!userAsBytes || userAsBytes.length === 0) {
+            throw new Error(`${uid} does not exist`);
+        }
+        const userlog = JSON.parse(userAsBytes.toString());
+        if(userlog.logs.length>0) {
+          userlog.compensationNoTimes=userlog.compensationNoTimes+userlog.logs.length
+        }
+        userlog.logs=[];
+        await ctx.stub.putState(uid, Buffer.from(JSON.stringify(userlog)));
     }
 }
 

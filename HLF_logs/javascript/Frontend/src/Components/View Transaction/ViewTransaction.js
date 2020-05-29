@@ -3,31 +3,21 @@ import LogsList from '../LogsList/LogsList';
 import Admin from '../Admin/Admin';
 import {Jumbotron} from 'react-bootstrap';
 
-const ViewTransaction = ({isTransactionData,transactionData,currentUser}) => {
+const ViewTransaction = ({user,currentUser}) => {
     console.log('from view',currentUser)
-    if(isTransactionData) {
         if(currentUser==='admin') {
             return(
                 <Jumbotron>
-                    <Admin transactionData={transactionData} />  
+                    <Admin transactionData={user} />  
                 </Jumbotron>
             ); 
         }
         else {
             return(
                 <Jumbotron>
-                    <LogsList transactionData={transactionData} />  
+                    <LogsList transactionData={user} />  
                 </Jumbotron>
             ); 
         }
-       
-    } else 
-    {
-        return (
-            <div></div>
-        )
-    }
-    
 }
-
 export default ViewTransaction;

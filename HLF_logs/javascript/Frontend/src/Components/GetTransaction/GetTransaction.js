@@ -14,17 +14,39 @@ class GetTransaction extends React.Component {
         this.onClickingView=this.onClickingView.bind(this);
     }
 
-    onClickingView = async (id) => {  
+    async componentDidMount() {
+        this.getUser();
+    }
+
+    getUser = async () => { 
         const ip = process.env.REACT_APP_IP
         console.log('hd',ip);  
-        await fetch(`http://${ip}:3001/viewTransaction`)
+        await fetch(`http://${ip}:3001/getUser`)
       .then(response => response.json())
       .then(data => {
+          console.log(data)
         this.setState({ data })
         this.props.onClickingView({data: this.state.data});
-        this.props.onRouteChange('logs');
         });
-      
+    }
+
+
+    onClickingView = async (id) => {  
+        this.getUser();
+        this.props.onRouteChange('logs');
+    }
+
+    onCompensate = async () => {
+        const ip = process.env.REACT_APP_IP
+        const { data } = this.state
+        if(data!==null) {
+            console.log(data.uid)
+            await fetch(`http://${ip}:3001/compensate`)
+        .then(response => response.json())
+        .then(data => {
+            this.getUser();
+            });
+        }
     }
 
     onInputChange = (event) => {
@@ -35,8 +57,9 @@ class GetTransaction extends React.Component {
         return(
                 <Jumbotron>
                     <h1>Welcome to the hyperledger network</h1>
-                    <p className='pa4'>Lets you access real-time logs</p>
+                    <p className='pa4'>Lets you access logs</p>
                     <Button variant='success' onClick={() => this.onClickingView('')}>Click here</Button>
+                    <Button variant='success' onClick={() => this.onCompensate()}>Compensate</Button>
                 </Jumbotron>
         );
         

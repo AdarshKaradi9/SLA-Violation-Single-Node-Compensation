@@ -7,7 +7,7 @@ async function main() {
         {
             ram: 8,
             os: 'windows',
-            load: 91,
+            load: 99,
             autoscale: 1
         };
     var args= {

@@ -89,10 +89,10 @@ async function main() {
         }
         });
         
-        app.get('/viewTransaction',async function(req,res) {
+        app.get('/getUser',async function(req,res) {
             console.log('from view',currentUser)
             let networkObj = await network.connectToNetwork(currentUser);
-            let response = await network.invoke(networkObj, true, 'queryLog', currentUser);
+            let response = await network.invoke(networkObj, true, 'queryUser', currentUser);
             let parsedResponse = await JSON.parse(response);
             console.log(parsedResponse);
             res.send(parsedResponse);
@@ -118,6 +118,18 @@ async function main() {
                 res.status(400).json(`User "${userId}" already logged in!!!`)
             }
         });
+
+        app.get('/compensate', async function(req, res) {
+            try {
+                let networkObj = await network.connectToNetwork(currentUser);
+                let response = await network.invoke(networkObj, false, 'compensate', currentUser);
+                console.log(response)
+                res.json(response)
+            } catch (err) {
+                res.status(400).json('Error')
+            }
+            
+        })
 
         app.get('/signout', async function(req, res) {
             await signOut();

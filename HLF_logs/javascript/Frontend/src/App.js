@@ -12,19 +12,16 @@ class App extends Component {
     super();
     this.state = {
       route: 'signin',
-      transactionData: null,
-      isTransactionData: false,
       isSignedIn: false,
-      currentUser: null
+      currentUser: null,
+      user: null
     }
   }
 
   
 
   onClickingView = (data) => {
-    this.setState({transactionData: data});
-    console.log(this.state.transactionData);
-    this.setState({isTransactionData: true})
+    this.setState({user: data});
     
   }
 
@@ -45,18 +42,18 @@ class App extends Component {
   }
 
   render() {
-    const {isSignedIn, isTransactionData, transactionData, route, currentUser} = this.state
+    const {isSignedIn, user, route, currentUser} = this.state
     return (  
       <div className="App mdiv"> 
-          <Navigation onRouteChange={this.onRouteChange} isSignedIn={isSignedIn} transactionData={transactionData} onUser={this.onUser} currentUser={currentUser} />
+          <Navigation onRouteChange={this.onRouteChange} isSignedIn={isSignedIn} onUser={this.onUser} currentUser={currentUser} />
           {   route === 'signin'
             ? <Signin onRouteChange={this.onRouteChange} currentUser={currentUser} onUser={this.onUser}/>
             : route === 'register'
             ? <Register onRouteChange={this.onRouteChange} />
             : route === 'home'
-            ? <GetTransaction isTransactionData={isTransactionData} transactionData={transactionData} onClickingView={this.onClickingView} onRouteChange={this.onRouteChange} />
+            ? <GetTransaction onClickingView={this.onClickingView} onRouteChange={this.onRouteChange} />
             : route === 'logs'
-              ? <ViewTransaction isTransactionData={isTransactionData} transactionData={transactionData} currentUser={currentUser} />
+              ? <ViewTransaction user={user} currentUser={currentUser} />
             : <div></div>
           }
     </div>

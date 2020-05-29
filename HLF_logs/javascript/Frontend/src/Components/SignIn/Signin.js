@@ -49,7 +49,7 @@ class Signin extends React.Component {
             .then(response => response.json())
             .then(data => {
                 if (data.resStatus === 'success') {
-                    console.log(data);
+                    console.log('Signin',data);
                     this.setState({currentUser: data.userName})
                     this.props.onUser(this.state.currentUser);  
                     this.props.onRouteChange('home');
